@@ -27,4 +27,5 @@ public:
 	UFUNCTION(BlueprintCallable) void DecrementHealth(float amount);
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) float Health = 100;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere) bool DestroyOnDeath = true;
 };

@@ -9,24 +9,38 @@
 #include "ItemHandeler.generated.h"
 
 USTRUCT(BlueprintType)
+struct FAnimations : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite,EditAnywhere) UAnimMontage* Arms;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere) UAnimMontage* Item;
+};
+
+USTRUCT(BlueprintType)
 struct FItemStruct : public FTableRowBase
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual") FString ItemName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual") UTexture* ItemImage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual") USkeletalMesh* ItemMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General") float ImpulseForce;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General") float FireRate;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Visual") FString ItemName;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Visual") UTexture* ItemImage;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Visual") USkeletalMesh* ItemMesh;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds") USoundBase* ItemUseSound;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds") USoundBase* ItemHitSound;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimations EquipAnim;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimations IdleAnim;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimations ADSAnim;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimations HipFireAnim;
+	
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "General") float ImpulseForce;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "General") float FireRate;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Sounds") USoundBase* ItemUseSound;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Sounds") USoundBase* ItemHitSound;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particals") UNiagaraSystem* HitParticleSystem;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particals") UParticleSystem* ParticleSystemAsset;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Particals") UNiagaraSystem* HitParticleSystem;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Particals") UParticleSystem* ParticleSystemAsset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug") FColor DebugTraceColor;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Debug") FColor DebugTraceColor;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -62,7 +76,8 @@ public:
 
 	UPROPERTY()
 	USkeletalMeshComponent* currentItemMesh;
-	
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "MyCategory|SubCategory") UAnimMontage* ArmsShootAnim;
+
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* NewSkeletalMeshComponent;
 	

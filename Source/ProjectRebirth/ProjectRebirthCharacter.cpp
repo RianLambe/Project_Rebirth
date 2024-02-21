@@ -101,13 +101,13 @@ void AProjectRebirthCharacter::SetupPlayerInputComponent(UInputComponent* Player
 void AProjectRebirthCharacter::Fire() {
 	GetComponentByClass<UItemHandeler>()->UseItem();
 
-	UActorComponent * AddComponentByClass
-	(
-		TSubclassOf< USkeletalMeshComponent > Class,
-		bool bManualAttachment,
-		const FTransform & RelativeTransform,
-		bool bDeferredFinish
-	);
+	//UActorComponent * AddComponentByClass
+	//(
+	//	TSubclassOf< USkeletalMeshComponent > Class,
+	//	bool bManualAttachment,
+	//	const FTransform & RelativeTransform,
+	//	bool bDeferredFinish
+	//);
 }
 
 void AProjectRebirthCharacter::Move(const FInputActionValue& Value)
@@ -127,27 +127,23 @@ void AProjectRebirthCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
+	float SensitivityCalc = ADS? LookSensitivity * ADSSensitivityPercent: LookSensitivity;
 
-	if (Controller != nullptr && CanLook)
-	{
+	if (Controller != nullptr && CanLook) {
 
-		//RecenterView = (LookAxisVector.Size() > .2);
-		// add yaw and pitch input to controller
-		//AddControllerYawInput(LookAxisVector.X);
-		//AddControllerPitchInput(LookAxisVector.Y);
-
-		//Arms->SetWorldRotation(FRotator(Arms->GetComponentRotation().Pitch - LookAxisVector.Y,Arms->GetComponentRotation().Yaw + LookAxisVector.X,0));
+		//Rotates the arms empty whihc controls the pitch of the camera
 		Arms->SetWorldRotation(FRotator(
-			FMathf::Clamp(Arms->GetComponentRotation().Pitch - LookAxisVector.Y, -80, 80),
+			FMathf::Clamp(Arms->GetComponentRotation().Pitch - LookAxisVector.Y * SensitivityCalc, -80, 80),
 			Arms->GetComponentRotation().Yaw,
 			Arms->GetComponentRotation().Roll));
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetControlRotation(FRotator(0,GetActorRotation().Yaw + LookAxisVector.X,0));
-		
+
+		//Rotates the players control rotation, which is the yaw axis of the camera
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetControlRotation(FRotator(0,GetActorRotation().Yaw + LookAxisVector.X * SensitivityCalc,0));
+
+		//Adds lag to the arms 
 		FPArmsTargetRot -= FRotator(0,LookAxisVector.X ,LookAxisVector.Y);
 		//FPArmsTargetRot.Yaw = FMath::Clamp(FPArmsTargetRot.Yaw, -140, -40);
 		//FPArmsTargetRot.Roll = FMath::Clamp(FPArmsTargetRot.Roll, -5, 3.5);
-
-
 	}
 }
 

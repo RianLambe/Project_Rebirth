@@ -35,7 +35,7 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UHealthComponent::DecrementHealth(float amount) {
 	Health -= amount;
 
-	if (Health <= 0) GetOwner()->Destroy();
+	if (Health <= 0 && DestroyOnDeath) GetOwner()->Destroy();
 }
 
 

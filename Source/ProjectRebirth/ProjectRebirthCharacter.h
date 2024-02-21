@@ -20,9 +20,7 @@ UCLASS(config=Game)
 class AProjectRebirthCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
-
-
+	
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
@@ -47,6 +45,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) bool CanMove = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) bool CanLook = true;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere) bool ADS;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Player settings") float LookSensitivity = 1;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Player settings") float ADSSensitivityPercent = .5;
 
 
 protected:

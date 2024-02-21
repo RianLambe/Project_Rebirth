@@ -2,6 +2,7 @@
 
 #include "ItemHandeler.h"
 #include "ContentBrowserItemData.h"
+#include "Health.h"
 #include "HealthComponent.h"
 #include "K2Node_AddComponentByClass.h"
 #include "ProjectRebirthCharacter.h"
@@ -95,6 +96,8 @@ void UItemHandeler::UseItem() {
 			hitResult.GetActor()->GetComponentByClass<UHealthComponent>()->DecrementHealth(50);
 			//GEngine->AddOnScreenDebugMessage(0, 5, FColor::Red, "Hit");
 		}
+		
+
 		//Cast<UHealthComponent>(hitResult.GetActor())->DecrementHealth(15);
 	}
 	//If line trace returns null
