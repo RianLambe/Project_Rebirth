@@ -8,6 +8,9 @@
 #include "Engine/DataTable.h"
 #include "ItemHandeler.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMyCustomDelegate);
+
 USTRUCT(BlueprintType)
 struct FAnimations : public FTableRowBase
 {
@@ -32,7 +35,7 @@ struct FItemStruct : public FTableRowBase
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimations HipFireAnim;
 	
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "General") float ImpulseForce;
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "General") float FireRate;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "General") float FireRate = 1;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Sounds") USoundBase* ItemUseSound;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Sounds") USoundBase* ItemHitSound;
@@ -52,12 +55,14 @@ public:
 	// Sets default values for this component's properties
 	UItemHandeler();
 
-
+	UPROPERTY(BlueprintAssignable, Category = "MyCategory")
+	FMyCustomDelegate OnMyCustomEvent;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	float TimeSinceUse;
 
 public:	
 	// Called every frame
@@ -68,6 +73,7 @@ public:
 
   	UPROPERTY(BlueprintReadWrite, EditAnywhere) float maxInteractDistance;
 	void UseItem();
+
 
 	
 	//Variables
@@ -85,6 +91,6 @@ public:
 	FItemStruct* currentItemData;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) bool DebugEnabled;
-
+	
 	
 };

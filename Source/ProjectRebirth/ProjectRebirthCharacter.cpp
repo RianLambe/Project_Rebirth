@@ -69,7 +69,14 @@ void AProjectRebirthCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	bool test = GetCharacterMovement()->IsFalling();
-	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, test == true ? "Grounded" : "Falling");
+	float goon = GetWorld()->GetTimeSeconds();
+
+	if (GetCharacterMovement()->IsFalling()) {
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString::SanitizeFloat(GetWorld()->GetTimeSeconds()));
+
+		
+	}
+	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, test == true ? "Grounded" : "Falling");
 	
 	//Adds sway to the arms
 	//FPArmsMesh->SetRelativeRotation(FMath::RInterpTo(FPArmsMesh->GetRelativeRotation(), FPArmsTargetRot, DeltaTime, 10));

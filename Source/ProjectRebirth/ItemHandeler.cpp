@@ -41,6 +41,7 @@ void UItemHandeler::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 //Sets the current item
 void UItemHandeler::SetCurrentItem(FName item) {
 	const FString ContextString; 
+
 	
 	currentItemData = itemData->FindRow<FItemStruct>(item, ContextString);
 	if (currentItemData) {
@@ -57,53 +58,52 @@ void UItemHandeler::SetCurrentItem(FName item) {
 
 //Uses the current item
 void UItemHandeler::UseItem() {
+	//Escape from function if requirements not met 
+	if (GetWorld()->GetTimeSeconds() - TimeSinceUse < 1 / currentItemData->FireRate) return void();
 	if (!currentItemData) return void();
 
+	OnMyCustomEvent.Broadcast();
+	
+	//track time since the last use of the item
+	TimeSinceUse = GetWorld()->GetTimeSeconds();
+	
 	//Local variables for line trace
-	FVector start;
+	FVector TraceStart;
+	FVector TraceEnd;
 	FVector CameraRotation;
-	FVector end;
-	FHitResult hitResult;
-	UCameraComponent* cameraRef = playerActor->FindComponentByClass<UCameraComponent>();
+	FHitResult HitResult;
+	UCameraComponent* CameraRef = playerActor->FindComponentByClass<UCameraComponent>();
 
 	//Calculations for line trace
-	start = cameraRef->GetComponentLocation();
-	CameraRotation = cameraRef->GetComponentRotation().Vector();
-	end = start + (CameraRotation * 50000);
+	TraceStart = CameraRef->GetComponentLocation();
+	CameraRotation = CameraRef->GetComponentRotation().Vector();
+	TraceEnd = TraceStart + (CameraRotation * 50000);
 
 	//Play shoot sound
-	UGameplayStatics::PlaySoundAtLocation(this, currentItemData->ItemUseSound, start);
+	UGameplayStatics::PlaySoundAtLocation(this, currentItemData->ItemUseSound, TraceStart);
 	
 	//Do line trace
-	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility)) {
-		//Debug 
-		if(DebugEnabled) DrawDebugLine(GetWorld(), start, hitResult.ImpactPoint, currentItemData->DebugTraceColor, false,2.0f,0,1.0f);
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility)) {
+		UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), currentItemData->HitParticleSystem, HitResult.Location, HitResult.Normal.ToOrientationRotator());
 
-	
-		UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), currentItemData->HitParticleSystem, hitResult.Location, hitResult.Normal.ToOrientationRotator());
-		//UParticleSystemComponent* ParticleSystemComponent = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleSystemAsset, FVector(0,0,0));
-
-		UStaticMeshComponent* MeshComponent = Cast<UStaticMeshComponent>(hitResult.GetActor()->GetRootComponent());
+		UStaticMeshComponent* MeshComponent = Cast<UStaticMeshComponent>(HitResult.GetActor()->GetRootComponent());
 
 		// Apply the impulse 
-		if(hitResult.GetComponent()->IsSimulatingPhysics()) hitResult.Component->AddImpulse(playerActor->GetActorForwardVector() * currentItemData->ImpulseForce, "", true);
+		if(HitResult.GetComponent()->IsSimulatingPhysics()) HitResult.Component->AddImpulse(playerActor->GetActorForwardVector() * currentItemData->ImpulseForce, "", true);
 
-		//hitResult.GetComponent()->AddImpulse(ImpulseForce * playerActor->GetActorForwardVector());
-
-		//if (Cast<UHealthComponent>(hitResult.GetActor())) GEngine->AddOnScreenDebugMessage(-1, 15, currentItemData->DebugTraceColor,"You hit an object, The name of it is  : " + hitResult.GetActor()->GetName());
-
-		if(hitResult.GetActor()->GetComponentByClass<UHealthComponent>()) {
-			hitResult.GetActor()->GetComponentByClass<UHealthComponent>()->DecrementHealth(50);
-			//GEngine->AddOnScreenDebugMessage(0, 5, FColor::Red, "Hit");
+		//Apply damage
+		if(HitResult.GetActor()->GetComponentByClass<UHealthComponent>()) {
+			HitResult.GetActor()->GetComponentByClass<UHealthComponent>()->DecrementHealth(50);
 		}
 		
-
-		//Cast<UHealthComponent>(hitResult.GetActor())->DecrementHealth(15);
 	}
 	//If line trace returns null
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Red, "You did not hit anything");
-		if (DebugEnabled) DrawDebugLine(GetWorld(), start, end, currentItemData->DebugTraceColor, false,2.0f,0,1.0f);
 	}
+
+	//Debug
+	if (DebugEnabled) DrawDebugLine(GetWorld(), TraceStart, TraceEnd, currentItemData->DebugTraceColor, false,2.0f,0,1.0f);
+
 }
 
