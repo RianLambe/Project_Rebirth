@@ -13,6 +13,7 @@
 #include "ItemHandeler.h"
 #include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Engine/LocalPlayer.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -67,6 +68,9 @@ void AProjectRebirthCharacter::BeginPlay()
 void AProjectRebirthCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+	bool test = GetCharacterMovement()->IsFalling();
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, test == true ? "Grounded" : "Falling");
+	
 	//Adds sway to the arms
 	//FPArmsMesh->SetRelativeRotation(FMath::RInterpTo(FPArmsMesh->GetRelativeRotation(), FPArmsTargetRot, DeltaTime, 10));
 	FPArmsTargetRot = FMath::RInterpTo(FPArmsTargetRot, FRotator(0, -90, 0), DeltaTime, 10);
