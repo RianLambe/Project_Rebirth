@@ -45,10 +45,9 @@ void UItemHandeler::SetCurrentItem(FName item) {
 	
 	currentItemData = itemData->FindRow<FItemStruct>(item, ContextString);
 	if (currentItemData) {
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, "New item set too : " + currentItemData->ItemName);
+		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, "New item set too : " + currentItemData->ItemName);
 
 		// Create the new Skeletal Mesh Component
-
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, "Item not found");

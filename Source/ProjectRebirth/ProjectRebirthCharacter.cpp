@@ -72,7 +72,7 @@ void AProjectRebirthCharacter::Tick(float DeltaTime) {
 	float goon = GetWorld()->GetTimeSeconds();
 
 	if (GetCharacterMovement()->IsFalling()) {
-		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString::SanitizeFloat(GetWorld()->GetTimeSeconds()));
+		///////////////////////////////////GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString::SanitizeFloat(GetWorld()->GetTimeSeconds()));
 
 		
 	}
