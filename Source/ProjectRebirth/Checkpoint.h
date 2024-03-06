@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "Checkpoint.generated.h"
 
@@ -15,8 +16,8 @@ public:
 	// Sets default values for this actor's properties
 	ACheckpoint();
 
+	UPROPERTY(VisibleAnywhere) UBoxComponent* CheckpointBounds;
 	
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

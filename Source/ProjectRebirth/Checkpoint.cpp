@@ -11,6 +11,7 @@ ACheckpoint::ACheckpoint()
 
 }
 
+
 // Called when the game starts or when spawned
 void ACheckpoint::BeginPlay()
 {
@@ -24,4 +25,7 @@ void ACheckpoint::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+
+
 
