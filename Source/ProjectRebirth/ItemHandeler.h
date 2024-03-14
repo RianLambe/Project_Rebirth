@@ -11,6 +11,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMyCustomDelegate);
 
+//Struct settups 
 USTRUCT(BlueprintType)
 struct FAnimations : public FTableRowBase
 {
@@ -43,6 +44,9 @@ struct FItemStruct : public FTableRowBase
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Particals") UNiagaraSystem* HitParticleSystem;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Particals") UParticleSystem* ParticleSystemAsset;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Pickup") FVector ColliderSize = FVector(15, 25, 20);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Pickup") FVector ColliderOffset;
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Debug") FColor DebugTraceColor;
 };
 

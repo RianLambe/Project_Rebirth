@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ItemHandeler.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "ItemPickup.generated.h"
 
@@ -19,6 +20,11 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void OnConstruction(const FTransform &Transform) override;
+
+	UPROPERTY() UBoxComponent* ItemCollider;
+
+
 
 public:	
 	// Called every frame
@@ -27,5 +33,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) FName Item;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) UDataTable* ItemData;
 	FItemStruct* currentItemData;
-	UPROPERTY() USkeletalMeshComponent* ItemPickupMesh;
+	UPROPERTY(EditAnywhere) USkeletalMeshComponent* ItemPickupMesh;
+	UPROPERTY(EditAnywhere) bool ItemPhysics = true;
 };

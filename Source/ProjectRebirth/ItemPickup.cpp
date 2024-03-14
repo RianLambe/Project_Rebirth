@@ -9,28 +9,40 @@ AItemPickup::AItemPickup()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	USceneComponent* r = CreateDefaultSubobject<USceneComponent>("Root");
+	SetRootComponent(r);
 	
 	ItemPickupMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Item pickup mesh");
-	RootComponent = ItemPickupMesh;
+	ItemPickupMesh->SetupAttachment(r);
+
+	ItemCollider = CreateDefaultSubobject<UBoxComponent>("Item collision");
+	ItemCollider->SetupAttachment(ItemPickupMesh);
 
 }
 
 // Called when the game starts or when spawned
 void AItemPickup::BeginPlay()
 {
-	Super::BeginPlay();
-	const FString ContextString; 
-	currentItemData = ItemData->FindRow<FItemStruct>(Item, ContextString);
+	ItemPickupMesh->SetSimulatePhysics(true);
+}
 
-	if (currentItemData) {
-		GEngine->AddOnScreenDebugMessage(0, 5, FColor::Red, "Found data");
-		USkeletalMesh* test = currentItemData->ItemMesh;
-		GEngine->AddOnScreenDebugMessage(0, 5, FColor::Red, currentItemData->ItemMesh->GetName());
-		
-		ItemPickupMesh->SetSkeletalMesh(currentItemData->ItemMesh);
+//Setup pickup on object construction
+void AItemPickup::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	if (ItemData) {
+		const FString ContextString; 
+		currentItemData = ItemData->FindRow<FItemStruct>(Item, ContextString);
+
+		if (currentItemData) {
+
+			ItemPickupMesh->SetSkeletalMesh(currentItemData->ItemMesh);
+			ItemCollider->InitBoxExtent(currentItemData->ColliderSize);
+			ItemCollider->SetRelativeLocation(currentItemData->ColliderOffset);
+		}
 	}
-
-
 }
 
 // Called every frame
