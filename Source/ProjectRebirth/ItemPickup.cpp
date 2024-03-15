@@ -5,50 +5,41 @@
 #include "ItemHandeler.h"
 
 // Sets default values
-AItemPickup::AItemPickup()
-{
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	USceneComponent* r = CreateDefaultSubobject<USceneComponent>("Root");
-	SetRootComponent(r);
+AItemPickup::AItemPickup() {
 	
+	//Item mesh
 	ItemPickupMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Item pickup mesh");
-	ItemPickupMesh->SetupAttachment(r);
+	ItemPickupMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	ItemPickupMesh->SetSimulatePhysics(true);
+	SetRootComponent(ItemPickupMesh);
 
+	//Item collider
 	ItemCollider = CreateDefaultSubobject<UBoxComponent>("Item collision");
 	ItemCollider->SetupAttachment(ItemPickupMesh);
 
-}
-
-// Called when the game starts or when spawned
-void AItemPickup::BeginPlay()
-{
-	ItemPickupMesh->SetSimulatePhysics(true);
-}
-
-//Setup pickup on object construction
-void AItemPickup::OnConstruction(const FTransform& Transform)
-{
-	Super::OnConstruction(Transform);
-
-	if (ItemData) {
-		const FString ContextString; 
-		currentItemData = ItemData->FindRow<FItemStruct>(Item, ContextString);
-
-		if (currentItemData) {
-
-			ItemPickupMesh->SetSkeletalMesh(currentItemData->ItemMesh);
-			ItemCollider->InitBoxExtent(currentItemData->ColliderSize);
-			ItemCollider->SetRelativeLocation(currentItemData->ColliderOffset);
-		}
+	//Finds a reference to the item data table in the project
+	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(TEXT("/Script/Engine.DataTable'/Game/Items/ItemData.ItemData'"));
+	if (DataTableFinder.Succeeded()) {
+		ItemData = DataTableFinder.Object;
 	}
 }
 
-// Called every frame
-void AItemPickup::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+//Setup pickup on object construction
+void AItemPickup::OnConstruction(const FTransform& Transform) {
+	
+	Super::OnConstruction(Transform);
 
+	//Find data at row location
+	if (ItemData) {
+		const FString ContextString; 
+		CurrentItemData = ItemData->FindRow<FItemStruct>(Item, ContextString);
+
+		//Assign parameters if item data has been found
+		if (CurrentItemData) {
+			ItemPickupMesh->SetSkeletalMesh(CurrentItemData->ItemMesh);
+			ItemCollider->InitBoxExtent(CurrentItemData->ColliderSize);
+			ItemCollider->SetRelativeLocation(CurrentItemData->ColliderOffset);
+		}
+	}
 }
 
