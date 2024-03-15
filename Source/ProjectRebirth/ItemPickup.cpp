@@ -20,7 +20,7 @@ AItemPickup::AItemPickup() {
 	//Finds a reference to the item data table in the project
 	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(TEXT("/Script/Engine.DataTable'/Game/Items/ItemData.ItemData'"));
 	if (DataTableFinder.Succeeded()) {
-		ItemData = DataTableFinder.Object;
+		ItemData1 = DataTableFinder.Object;
 	}
 }
 
@@ -30,10 +30,10 @@ void AItemPickup::OnConstruction(const FTransform& Transform) {
 	Super::OnConstruction(Transform);
 
 	//Find data at row location
-	if (ItemData) {
+	if (ItemData.DataTable) {
 		const FString ContextString; 
-		CurrentItemData = ItemData->FindRow<FItemStruct>(Item, ContextString);
-
+		CurrentItemData = ItemData.DataTable->FindRow<FItemStruct>(ItemData.RowName, ContextString);
+		
 		//Assign parameters if item data has been found
 		if (CurrentItemData) {
 			ItemPickupMesh->SetSkeletalMesh(CurrentItemData->ItemMesh);

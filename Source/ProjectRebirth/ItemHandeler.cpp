@@ -21,6 +21,8 @@ UItemHandeler::UItemHandeler() {
 	PrimaryComponentTick.bCanEverTick = true;
 
 	//NewSkeletalMeshComponent->SetupAttachment(playerActor->GetRootComponent());
+
+	ItemMesh
 }
 
 // Called when the game starts

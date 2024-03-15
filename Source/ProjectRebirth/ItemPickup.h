@@ -27,11 +27,9 @@ public:
 	AItemPickup();
 
 	//Exposed properties
+	UPROPERTY(EditAnywhere) FDataTableRowHandle ItemData;
 
-
-	UPROPERTY(EditAnywhere) FDataTableRowHandle Items;
-	FDataTableRowHandle RowHandle;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere) FName Item;
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere) FName Item;
 	UPROPERTY(EditAnywhere) bool ItemPhysics = true;
 
 protected:
@@ -39,7 +37,7 @@ protected:
 	virtual void OnConstruction(const FTransform &Transform) override;
 
 	//Protected variables
-	UPROPERTY() UDataTable* ItemData;
+	UPROPERTY() UDataTable* ItemData1;
 	FItemStruct* CurrentItemData;
 
 	//Objects
