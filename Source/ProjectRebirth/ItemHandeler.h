@@ -96,5 +96,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) bool DebugEnabled;
 	
-	UPROPERTY(VisibleAnywhere) USkeletalMeshComponent* ItemMesh;
-};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+
+	UChildActorComponent* SkeletalMeshComponent;};

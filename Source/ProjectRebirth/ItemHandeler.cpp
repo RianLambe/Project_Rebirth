@@ -22,7 +22,8 @@ UItemHandeler::UItemHandeler() {
 
 	//NewSkeletalMeshComponent->SetupAttachment(playerActor->GetRootComponent());
 
-	ItemMesh
+	//ItemMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Item mesh");
+	//ItemMesh->SetRelativeLocation(FVector(0,0,-150));
 }
 
 // Called when the game starts
