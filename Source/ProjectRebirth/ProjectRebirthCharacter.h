@@ -107,5 +107,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* AdditionalMeshComponent;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere) USkeletalMeshComponent* ItemMesh;
 };
 

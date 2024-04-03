@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ItemHandeler.h"
+
+#include "ComponentUtils.h"
 #include "ContentBrowserItemData.h"
 #include "Health.h"
 #include "HealthComponent.h"
@@ -24,6 +26,7 @@ UItemHandeler::UItemHandeler() {
 
 	//ItemMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Item mesh");
 	//ItemMesh->SetRelativeLocation(FVector(0,0,-150));
+
 }
 
 // Called when the game starts
@@ -31,6 +34,9 @@ void UItemHandeler::BeginPlay() {
 	Super::BeginPlay();
 
 	playerActor = GetOwner();
+	ArmsRef = Cast<AProjectRebirthCharacter>(GetOwner())->FPArmsMesh;
+	ItemRef = Cast<AProjectRebirthCharacter>(GetOwner())->ItemMesh;
+
 	//camera =
 
 	// ...
@@ -45,15 +51,16 @@ void UItemHandeler::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 void UItemHandeler::SetCurrentItem(FName item) {
 	const FString ContextString; 
 
-	
-	currentItemData = itemData->FindRow<FItemStruct>(item, ContextString);
-	if (currentItemData) {
+	if (itemData) {
+		currentItemData = itemData->FindRow<FItemStruct>(item, ContextString);
 		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, "New item set too : " + currentItemData->ItemName);
 
+		if (currentItemData) ItemRef->SetSkeletalMesh(currentItemData->ItemMesh);
+ 
 		// Create the new Skeletal Mesh Component
 	}
 	else {
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, "Item not found");
+		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, "Item item data found");
 	}
 }
 

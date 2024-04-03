@@ -46,6 +46,10 @@ AProjectRebirthCharacter::AProjectRebirthCharacter()
 	FPArmsMesh->CastShadow = false;
 	//FPArms->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	//FPArms->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+
+
+	ItemMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Item mesh");
+	ItemMesh->SetupAttachment(Arms);
 	
 }
 
