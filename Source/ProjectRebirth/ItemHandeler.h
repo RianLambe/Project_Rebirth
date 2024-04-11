@@ -8,17 +8,28 @@
 #include "Engine/DataTable.h"
 #include "ItemHandeler.generated.h"
 
+class AItemPickup;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMyCustomDelegate);
 
 //Struct settups 
 USTRUCT(BlueprintType)
-struct FAnimations : public FTableRowBase
+struct FAnimationMon : public FTableRowBase
 {
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite,EditAnywhere) UAnimMontage* Arms;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere) UAnimMontage* Item;
+};
+
+//Struct settups 
+USTRUCT(BlueprintType)
+struct FAnimationSeq : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite,EditAnywhere) UAnimSequence* Arms;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere) UAnimSequence* Item;
 };
 
 USTRUCT(BlueprintType)
@@ -30,10 +41,10 @@ struct FItemStruct : public FTableRowBase
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Visual") UTexture* ItemImage;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Visual") USkeletalMesh* ItemMesh;
 	
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimations EquipAnim;
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimations IdleAnim;
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimations ADSAnim;
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimations HipFireAnim;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimationMon EquipAnim;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimationSeq IdleAnim;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimationSeq ADSAnim;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimationMon HipFireAnim;
 	
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "General") float ImpulseForce;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "General") float FireRate = 1;
@@ -62,6 +73,11 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "MyCategory")
 	FMyCustomDelegate OnMyCustomEvent;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere) AActor* PotentialInteract;
+
+
+	UFUNCTION(BlueprintCallable) void Interact();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -72,6 +88,8 @@ protected:
 	USkeletalMeshComponent* ArmsRef;
 	USkeletalMeshComponent* ItemRef;
 
+	
+
 
 public:	
 	// Called every frame
@@ -80,7 +98,7 @@ public:
 	//Functions
 	UFUNCTION(BlueprintCallable) void SetCurrentItem(FName item);
 
-  	UPROPERTY(BlueprintReadWrite, EditAnywhere) float maxInteractDistance;
+  	UPROPERTY(BlueprintReadWrite, EditAnywhere) float maxInteractDistance = 500;
 	void UseItem();
 
 

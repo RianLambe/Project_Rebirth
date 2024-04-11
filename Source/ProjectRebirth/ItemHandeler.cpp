@@ -1,19 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "ItemHandeler.h"
-
-#include "ComponentUtils.h"
-#include "ContentBrowserItemData.h"
-#include "Health.h"
+#include "FPAnimInstance.h"
 #include "HealthComponent.h"
-#include "K2Node_AddComponentByClass.h"
 #include "ProjectRebirthCharacter.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/GameSession.h"
 #include "Engine/DataTable.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "ItemHandeler.h"
+
+#include "ItemPickup.h"
 
 
 // Sets default values for this component's properties
@@ -45,6 +42,26 @@ void UItemHandeler::BeginPlay() {
 // Called every frame
 void UItemHandeler::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	//Local variables for line trace
+	FVector TraceStart;
+	FVector TraceEnd;
+	FVector CameraRotation;
+	FHitResult InteractResult;
+	UCameraComponent* CameraRef = playerActor->FindComponentByClass<UCameraComponent>();
+
+	//Calculations for line trace
+	TraceStart = CameraRef->GetComponentLocation();
+	CameraRotation = CameraRef->GetComponentRotation().Vector();
+	TraceEnd = TraceStart + (CameraRotation * maxInteractDistance);
+	
+	//Do line trace
+	if (GetWorld()->LineTraceSingleByChannel(InteractResult, TraceStart, TraceEnd, ECC_Visibility)) {
+		if (Cast<AItemPickup>(InteractResult.GetActor())) {
+			//GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, InteractResult.GetActor()->GetName());
+			PotentialInteract = InteractResult.GetActor();
+		}
+	}
 }
 
 //Sets the current item
@@ -56,14 +73,15 @@ void UItemHandeler::SetCurrentItem(FName item) {
 		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, "New item set too : " + currentItemData->ItemName);
 
 		if (currentItemData) ItemRef->SetSkeletalMesh(currentItemData->ItemMesh);
- 
+		Cast<UFPAnimInstance>(ItemRef->GetAnimInstance())->IdleAnim = currentItemData->IdleAnim.Item;
+		Cast<UFPAnimInstance>(ArmsRef->GetAnimInstance())->IdleAnim = currentItemData->IdleAnim.Arms;
+
 		// Create the new Skeletal Mesh Component
 	}
 	else {
 		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, "Item item data found");
 	}
 }
-
 
 //Uses the current item
 void UItemHandeler::UseItem() {
@@ -113,6 +131,15 @@ void UItemHandeler::UseItem() {
 
 	//Debug
 	if (DebugEnabled) DrawDebugLine(GetWorld(), TraceStart, TraceEnd, currentItemData->DebugTraceColor, false,2.0f,0,1.0f);
+
+}
+
+void UItemHandeler::Interact() {
+
+	if (PotentialInteract) {
+		SetCurrentItem(Cast<AItemPickup>(PotentialInteract)->ItemData.RowName);
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, Cast<AItemPickup>(PotentialInteract)->ItemData.RowName.ToString());
+	}
 
 }
 

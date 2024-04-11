@@ -85,6 +85,8 @@ void AProjectRebirthCharacter::Tick(float DeltaTime) {
 	//Adds sway to the arms
 	//FPArmsMesh->SetRelativeRotation(FMath::RInterpTo(FPArmsMesh->GetRelativeRotation(), FPArmsTargetRot, DeltaTime, 10));
 	FPArmsTargetRot = FMath::RInterpTo(FPArmsTargetRot, FRotator(0, -90, 0), DeltaTime, 10);
+
+	
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -171,3 +173,4 @@ bool AProjectRebirthCharacter::GetHasRifle()
 {
 	return bHasRifle;
 }
+

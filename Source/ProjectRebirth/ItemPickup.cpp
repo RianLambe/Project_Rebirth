@@ -2,7 +2,6 @@
 
 
 #include "ItemPickup.h"
-#include "ItemHandeler.h"
 
 // Sets default values
 AItemPickup::AItemPickup() {
