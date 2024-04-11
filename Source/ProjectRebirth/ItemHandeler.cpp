@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "ItemHandeler.h"
 #include "FPAnimInstance.h"
 #include "HealthComponent.h"
 #include "ProjectRebirthCharacter.h"
@@ -8,22 +9,14 @@
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "ItemHandeler.h"
-
 #include "ItemPickup.h"
+
 
 
 // Sets default values for this component's properties
 UItemHandeler::UItemHandeler() {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	//NewSkeletalMeshComponent->SetupAttachment(playerActor->GetRootComponent());
-
-	//ItemMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Item mesh");
-	//ItemMesh->SetRelativeLocation(FVector(0,0,-150));
-
 }
 
 // Called when the game starts
@@ -33,10 +26,6 @@ void UItemHandeler::BeginPlay() {
 	playerActor = GetOwner();
 	ArmsRef = Cast<AProjectRebirthCharacter>(GetOwner())->FPArmsMesh;
 	ItemRef = Cast<AProjectRebirthCharacter>(GetOwner())->ItemMesh;
-
-	//camera =
-
-	// ...
 }
 
 // Called every frame
@@ -49,7 +38,7 @@ void UItemHandeler::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	FVector CameraRotation;
 	FHitResult InteractResult;
 	UCameraComponent* CameraRef = playerActor->FindComponentByClass<UCameraComponent>();
-
+	
 	//Calculations for line trace
 	TraceStart = CameraRef->GetComponentLocation();
 	CameraRotation = CameraRef->GetComponentRotation().Vector();
@@ -68,6 +57,7 @@ void UItemHandeler::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 void UItemHandeler::SetCurrentItem(FName item) {
 	const FString ContextString; 
 
+	//If there is item data found then set all new properties
 	if (itemData) {
 		currentItemData = itemData->FindRow<FItemStruct>(item, ContextString);
 		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, "New item set too : " + currentItemData->ItemName);
@@ -75,8 +65,6 @@ void UItemHandeler::SetCurrentItem(FName item) {
 		if (currentItemData) ItemRef->SetSkeletalMesh(currentItemData->ItemMesh);
 		Cast<UFPAnimInstance>(ItemRef->GetAnimInstance())->IdleAnim = currentItemData->IdleAnim.Item;
 		Cast<UFPAnimInstance>(ArmsRef->GetAnimInstance())->IdleAnim = currentItemData->IdleAnim.Arms;
-
-		// Create the new Skeletal Mesh Component
 	}
 	else {
 		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, "Item item data found");
@@ -138,7 +126,7 @@ void UItemHandeler::Interact() {
 
 	if (PotentialInteract) {
 		SetCurrentItem(Cast<AItemPickup>(PotentialInteract)->ItemData.RowName);
-		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, Cast<AItemPickup>(PotentialInteract)->ItemData.RowName.ToString());
+		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, Cast<AItemPickup>(PotentialInteract)->ItemData.RowName.ToString());
 	}
 
 }
