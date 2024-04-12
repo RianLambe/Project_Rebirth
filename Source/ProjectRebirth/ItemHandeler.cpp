@@ -43,9 +43,14 @@ void UItemHandeler::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	TraceStart = CameraRef->GetComponentLocation();
 	CameraRotation = CameraRef->GetComponentRotation().Vector();
 	TraceEnd = TraceStart + (CameraRotation * maxInteractDistance);
+
+
 	
 	//Do line trace
 	if (GetWorld()->LineTraceSingleByChannel(InteractResult, TraceStart, TraceEnd, ECC_Visibility)) {
+
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, InteractResult.GetActor()->GetName());
+
 		if (Cast<AItemPickup>(InteractResult.GetActor())) {
 			//GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, InteractResult.GetActor()->GetName());
 			PotentialInteract = InteractResult.GetActor();
