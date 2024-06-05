@@ -16,6 +16,11 @@ AItemPickup::AItemPickup() {
 	ItemCollider = CreateDefaultSubobject<UBoxComponent>("Item collision");
 	ItemCollider->SetupAttachment(ItemPickupMesh);
 
+	ItemCollider->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	ItemCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
+	ItemCollider->SetCollisionProfileName(FName("BlockAll"));
+
+	
 	//Finds a reference to the item data table in the project
 	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(TEXT("/Script/Engine.DataTable'/Game/Items/ItemData.ItemData'"));
 	if (DataTableFinder.Succeeded()) {
