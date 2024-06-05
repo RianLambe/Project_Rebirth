@@ -1,17 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
-//#include "IDetailCustomization.h"
-//#include "IDetailChildrenBuilder.h"
-//#include "DetailLayoutBuilder.h"
-//#include "PropertyHandle.h"
-
 #include "CoreMinimal.h"
 #include "ItemHandeler.h"
-#include "SGraphPinDataTableRowName.h"
 #include "Components/BoxComponent.h"
-//#include "Elements/Common/TypedElementHandles.h"
 #include "GameFramework/Actor.h"
 #include "ItemPickup.generated.h"
 

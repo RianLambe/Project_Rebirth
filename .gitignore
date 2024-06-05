@@ -74,3 +74,4 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 *Content/Enviroment/Foliage/Trees/Assets/Snow_path.uasset
+*Packaged builds/

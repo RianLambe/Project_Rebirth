@@ -2,16 +2,13 @@
 
 #include "ProjectRebirthCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "ProjectRebirthProjectile.h"
 #include "Animation/AnimInstance.h"
-#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "ItemHandeler.h"
-#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -46,11 +43,13 @@ AProjectRebirthCharacter::AProjectRebirthCharacter()
 	FPArmsMesh->CastShadow = false;
 	//FPArms->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	//FPArms->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
-
+	
 
 	ItemMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Item mesh");
 	ItemMesh->SetupAttachment(Arms);
+
 	
+	PlayerInventory = CreateDefaultSubobject<UInventory>("Inventory");
 }
 
 void AProjectRebirthCharacter::BeginPlay()
@@ -172,5 +171,21 @@ void AProjectRebirthCharacter::SetHasRifle(bool bNewHasRifle)
 bool AProjectRebirthCharacter::GetHasRifle()
 {
 	return bHasRifle;
+}
+
+void AProjectRebirthCharacter::RelocatePlayer(FTransform NewTransform, FTransform TransformOffset) {
+	
+	SetActorLocation(NewTransform.GetLocation() +
+		(NewTransform.GetRotation().GetForwardVector() * TransformOffset.GetLocation().X) +
+		(NewTransform.GetRotation().GetRightVector() * TransformOffset.GetLocation().Y) +
+		(NewTransform.GetRotation().GetUpVector() * TransformOffset.GetLocation().Z));
+
+	GetInstigatorController()->SetControlRotation(NewTransform.Rotator() + TransformOffset.Rotator());
+	Arms->SetRelativeRotation(FRotator(0,0,0));
+}
+
+void AProjectRebirthCharacter::FreezePlayer(bool Freeze) {
+	CanMove = !Freeze;
+	CanLook = !Freeze;
 }
 

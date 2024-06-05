@@ -7,6 +7,7 @@
 #include "Health.generated.h"
 
 
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTREBIRTH_API UHealth : public USceneComponent
 {
@@ -28,4 +29,5 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) float Health = 100;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) bool DestroyOnDeath = true;
+
 };

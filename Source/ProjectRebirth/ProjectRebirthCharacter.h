@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Inventory.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "ProjectRebirthCharacter.generated.h"
@@ -12,6 +13,7 @@ class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
+
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -80,6 +82,11 @@ public:
 	bool GetHasRifle();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) FRotator FPArmsTargetRot = FRotator(0,-90,0);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere) UInventory* PlayerInventory;
+
+	UFUNCTION(BlueprintCallable) void RelocatePlayer(FTransform NewTransform, FTransform TransformOffset);
+	UFUNCTION(BlueprintCallable) void FreezePlayer(bool Freeze);
 
 protected:
 	/** Called for movement input */

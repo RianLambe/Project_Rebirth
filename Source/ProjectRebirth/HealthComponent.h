@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDied);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTREBIRTH_API UHealthComponent : public UActorComponent
@@ -28,4 +29,7 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) float Health = 100;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) bool DestroyOnDeath = true;
+	
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere) FOnDied Died;
+
 };

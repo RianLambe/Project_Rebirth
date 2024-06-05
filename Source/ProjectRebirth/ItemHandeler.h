@@ -41,7 +41,7 @@ struct FItemStruct : public FTableRowBase
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Visual") UTexture* ItemImage;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Visual") USkeletalMesh* ItemMesh;
 	
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimationMon EquipAnim;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimationSeq EquipAnim;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimationSeq IdleAnim;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimationSeq ADSAnim;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,  Category = "Animation") FAnimationMon HipFireAnim;

@@ -43,9 +43,11 @@ void UItemHandeler::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	TraceStart = CameraRef->GetComponentLocation();
 	CameraRotation = CameraRef->GetComponentRotation().Vector();
 	TraceEnd = TraceStart + (CameraRotation * maxInteractDistance);
-	
+
 	//Do line trace
 	if (GetWorld()->LineTraceSingleByChannel(InteractResult, TraceStart, TraceEnd, ECC_Visibility)) {
+		PotentialInteract = InteractResult.GetActor();
+
 		if (Cast<AItemPickup>(InteractResult.GetActor())) {
 			//GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, InteractResult.GetActor()->GetName());
 			PotentialInteract = InteractResult.GetActor();
@@ -62,9 +64,25 @@ void UItemHandeler::SetCurrentItem(FName item) {
 		currentItemData = itemData->FindRow<FItemStruct>(item, ContextString);
 		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, "New item set too : " + currentItemData->ItemName);
 
-		if (currentItemData) ItemRef->SetSkeletalMesh(currentItemData->ItemMesh);
-		Cast<UFPAnimInstance>(ItemRef->GetAnimInstance())->IdleAnim = currentItemData->IdleAnim.Item;
-		Cast<UFPAnimInstance>(ArmsRef->GetAnimInstance())->IdleAnim = currentItemData->IdleAnim.Arms;
+		if (currentItemData) {
+			ItemRef->SetSkeletalMesh(currentItemData->ItemMesh);
+
+			//Set animation controller values for both the item and the arms
+			Cast<UFPAnimInstance>(ItemRef->GetAnimInstance())->EquipAnim = currentItemData->EquipAnim.Item; //Equip
+			Cast<UFPAnimInstance>(ArmsRef->GetAnimInstance())->EquipAnim = currentItemData->EquipAnim.Arms;
+		
+			Cast<UFPAnimInstance>(ItemRef->GetAnimInstance())->IdleAnim = currentItemData->IdleAnim.Item; //Idle
+			Cast<UFPAnimInstance>(ArmsRef->GetAnimInstance())->IdleAnim = currentItemData->IdleAnim.Arms;
+
+			Cast<UFPAnimInstance>(ItemRef->GetAnimInstance())->ADSAnim = currentItemData->ADSAnim.Item; //ADS
+			Cast<UFPAnimInstance>(ArmsRef->GetAnimInstance())->ADSAnim = currentItemData->ADSAnim.Arms;
+
+			Cast<UFPAnimInstance>(ItemRef->GetAnimInstance())->Reset = true;
+			Cast<UFPAnimInstance>(ArmsRef->GetAnimInstance())->Reset = true;
+
+			
+		}
+
 	}
 	else {
 		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, "Item item data found");
@@ -74,9 +92,10 @@ void UItemHandeler::SetCurrentItem(FName item) {
 //Uses the current item
 void UItemHandeler::UseItem() {
 	//Escape from function if requirements not met 
-	if (GetWorld()->GetTimeSeconds() - TimeSinceUse < 1 / currentItemData->FireRate) return void();
 	if (!currentItemData) return void();
+	if (GetWorld()->GetTimeSeconds() - TimeSinceUse < 1 / currentItemData->FireRate) return void();
 
+	
 	OnMyCustomEvent.Broadcast();
 	
 	//track time since the last use of the item
@@ -124,10 +143,10 @@ void UItemHandeler::UseItem() {
 
 void UItemHandeler::Interact() {
 
-	if (PotentialInteract) {
-		SetCurrentItem(Cast<AItemPickup>(PotentialInteract)->ItemData.RowName);
-		if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, Cast<AItemPickup>(PotentialInteract)->ItemData.RowName.ToString());
-	}
+	//if (PotentialInteract) {
+	//	SetCurrentItem(Cast<AItemPickup>(PotentialInteract)->ItemData.RowName);
+	//	if (DebugEnabled) GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, Cast<AItemPickup>(PotentialInteract)->ItemData.RowName.ToString());
+	//}
 
 }
 
